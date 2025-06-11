@@ -7,7 +7,7 @@ import textwrap
 from src.libs.resume_and_cover_builder.utils import LoggerChatModel
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from loguru import logger
@@ -24,11 +24,9 @@ log_path = Path(log_folder).resolve()
 logger.add(log_path / "gpt_resume.log", rotation="1 day", compression="zip", retention="7 days", level="DEBUG")
 
 class LLMResumer:
-    def __init__(self, openai_api_key, strings):
+    def __init__(self, ollama_api_url, strings):
         self.llm_cheap = LoggerChatModel(
-            ChatOpenAI(
-                model_name="gpt-4o-mini", openai_api_key=openai_api_key, temperature=0.4
-            )
+            ChatOllama(model="mistral", base_url=ollama_api_url)
         )
         self.strings = strings
 
