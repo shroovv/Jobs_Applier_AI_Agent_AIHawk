@@ -18,7 +18,7 @@ class ResumeFacade:
         """
         Initialize the FacadeManager with the given API key, style manager, resume generator, resume object, and log path.
         Args:
-            api_key (str): The OpenAI API key to be used for generating text.
+            api_key (str): The Ollama API URL to be used for generating text.
             style_manager (StyleManager): The StyleManager instance to manage the styles.
             resume_generator (ResumeGenerator): The ResumeGenerator instance to generate resumes and cover letters.
             resume_object (str): The resume object to be used for generating resumes and cover letters.
@@ -73,7 +73,7 @@ class ResumeFacade:
         self.driver.implicitly_wait(10)
         body_element = self.driver.find_element("tag name", "body")
         body_element = body_element.get_attribute("outerHTML")
-        self.llm_job_parser = LLMParser(openai_api_key=global_config.API_KEY)
+        self.llm_job_parser = LLMParser(ollama_api_url=global_config.API_KEY)
         self.llm_job_parser.set_body_html(body_element)
 
         self.job = Job()

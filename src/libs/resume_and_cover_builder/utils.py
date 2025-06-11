@@ -4,13 +4,12 @@ This module contains utility functions for the Resume and Cover Letter Builder s
 
 # app/libs/resume_and_cover_builder/utils.py
 import json
-import openai
 import time
 from datetime import datetime
 from typing import Dict, List
 from langchain_core.messages.ai import AIMessage
 from langchain_core.prompt_values import StringPromptValue
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 from .config import global_config
 from loguru import logger
 from requests.exceptions import HTTPError as HTTPStatusError
@@ -18,12 +17,12 @@ from requests.exceptions import HTTPError as HTTPStatusError
 
 class LLMLogger:
 
-    def __init__(self, llm: ChatOpenAI):
+    def __init__(self, llm: ChatOllama):
         self.llm = llm
 
     @staticmethod
     def log_request(prompts, parsed_reply: Dict[str, Dict]):
-        calls_log = global_config.LOG_OUTPUT_FILE_PATH / "open_ai_calls.json"
+        calls_log = global_config.LOG_OUTPUT_FILE_PATH / "ollama_calls.json"
         if isinstance(prompts, StringPromptValue):
             prompts = prompts.text
         elif isinstance(prompts, Dict):
@@ -76,7 +75,7 @@ class LLMLogger:
 
 class LoggerChatModel:
 
-    def __init__(self, llm: ChatOpenAI):
+    def __init__(self, llm: ChatOllama):
         self.llm = llm
 
     def __call__(self, messages: List[Dict[str, str]]) -> str:
@@ -89,8 +88,8 @@ class LoggerChatModel:
                 parsed_reply = self.parse_llmresult(reply)
                 LLMLogger.log_request(prompts=messages, parsed_reply=parsed_reply)
                 return reply
-            except (openai.RateLimitError, HTTPStatusError) as err:
-                if isinstance(err, HTTPStatusError) and err.response.status_code == 429:
+            except HTTPStatusError as err:
+                if err.response.status_code == 429:
                     logger.warning(f"HTTP 429 Too Many Requests: Waiting for {retry_delay} seconds before retrying (Attempt {attempt + 1}/{max_retries})...")
                     time.sleep(retry_delay)
                     retry_delay *= 2
