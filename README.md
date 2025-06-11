@@ -24,3 +24,9 @@ AIHawk has been featured by major media outlets for revolutionizing how job seek
 [**Vanity Fair**](https://www.vanityfair.it/article/intelligenza-artificiale-candidature-di-lavoro)
 [**404 Media**](https://www.404media.co/i-applied-to-2-843-roles-the-rise-of-ai-powered-job-application-bots/)
 
+
+## LLM Prompts
+
+Prompt templates used by `LLMManager` are defined in `ai_hawk/llm/prompts.py`.
+Adjust these strings if you need to customise how the agent interacts with your
+language model.
